@@ -46,6 +46,15 @@ function listTasks() {
         resultsBody.appendChild(taskRow);
     }
 
+    //Display tasks that have been completed with strikethrough and checkbox checked
+    tasks.forEach(task => {
+        console.log(tasks)
+        if (task.completed == true) {
+            document.getElementById("data-row").classList.add("strikeThrough");
+            document.getElementById("taskCheck").checked = true;
+        }
+    });
+
     countTasks();
 }
 
@@ -74,7 +83,7 @@ function editTask(node) {
 
     document.getElementById("editID").value = editedTask.id;
     document.getElementById("editTitle").value = editedTask.title;
-    document.getElementById("editDueDate").value = editedTask.dueDate;
+    document.getElementById("editDueDate").value = displayDate(editedTask.dueDate);
 }
 
 function editSave() {
@@ -155,29 +164,56 @@ function isChecked() {
     }
 };
 
-function checkIfCompleted() {
-    let tasks = getLocalStorage();
-    let thisRow = btn.closest("tr")
-    let isDone = tasks.filter(task => task.completed = true);
-    isDone.forEach(task => {
-        thisRow.classList.add("strikeThrough")
-    })
-};
-
 
 function countTasks() {
     let tasks = getLocalStorage()
     document.getElementById("numTasks").innerHTML = tasks.length;
 }
 
-// function editTask() {
-//     let taskId = formData[0].value();
+function filterCompleted() {
+    let tasks = getLocalStorage();
+    let done = [];
+    for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].completed === true) {
+            done.push(tasks[i])
+        }
+    }
+    displayFiltered(done)
+};
 
-//     let task = getLocalStorage().find(t => t.id == taskId);
-// }
+function filterIncomplete() {
+    let tasks = getLocalStorage();
+    let notDone = [];
+    for (let i = 0; i < tasks.length; i++) {
+        if (tasks[i].completed === false) {
+            notDone.push(tasks[i])
+        }
+    }
+    displayFiltered(notDone)
+}
 
-//CompleteTask(element)
-// let task = tasks.find(t => t.id == taskId);
+function displayFiltered(arr) {
+    let tasks = getLocalStorage();
+    let template = document.getElementById("data-template");
+    let resultsBody = document.getElementById("resultsBody");
+
+    resultsBody.innerHTML = "";
+
+    arr.forEach(task => {
+        const taskRow = document.importNode(template.content, true)
+
+        taskRow.getElementById("taskID").textContent = task.id;
+        taskRow.getElementById("complete").textContent = task.completed;
+        taskRow.getElementById("task").textContent = task.title;
+        taskRow.getElementById("createdDate").textContent = task.created;
+        taskRow.getElementById("dueDate").textContent = displayDate(task.dueDate);
+
+        resultsBody.appendChild(taskRow);
+    });
+
+    document.getElementById("numTasks").innerHTML = arr.length;
+};
+
 
 //Generate an ID for each task
 function generateID() {

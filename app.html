@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
   </head>
   <body onload="prepareLocalStorage()">
-    <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-dark flex-md-nowrap p-0 shadow">
+    <nav class="navbar navbar-dark navbar-expand-xl fixed-top flex-md-nowrap p-0 shadow">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"><span><img id="logo" src="/img/task-master.png" alt="task-master"></span></a>
       <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -68,9 +68,9 @@
               <i class="fas fa-tasks"></i> DROPDOWN LINKS
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" id="incomplete">Incomplete</a>
-              <a class="dropdown-item" id="overdue">Overdue</a>
-              <a class="dropdown-item" id="complete">Complete</a>
+              <a class="dropdown-item" id="overdue" onclick="listTasks()">All</a>
+              <a class="dropdown-item" id="incomplete" onclick="filterIncomplete()">Incomplete</a>
+              <a class="dropdown-item" id="complete" onclick="filterCompleted()">Complete</a>
             </div>
           </li>
         </ul>
@@ -177,8 +177,8 @@
     </div>
   </div>
 <template id="data-template">
-  <tr>
-    <td id="check"><input class="taskCheck" type="checkbox" onclick="completeTask(this)"></td>
+  <tr id="data-row">
+    <td id="check"><input id="taskCheck" class="taskCheck" type="checkbox" onclick="completeTask(this)"></td>
     <td id="taskID" class="d-none"></td>
     <td id="complete" class="complete d-none" class="d-none"></td>
     <td id="task"></td>

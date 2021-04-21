@@ -23,9 +23,11 @@ h5 {
     text-align: center;
 }
 
-#currentTasks {
-    margin: 3% 30%;
-    width: 40%;
+@media(min-width: 1000px) {
+    #currentTasks {
+        margin: 3% 30%;
+        width: 40%;
+    }
 }
 
 .btn {
@@ -42,6 +44,16 @@ hr {
 /* Custom page CSS
 -------------------------------------------------- */
 /* Not required for template or sticky footer method. */
+
+.devicon i {
+    font-size: 3rem;
+    margin: 2%;
+}
+
+.devicon-col {
+    padding-top: 5%;
+    text-align: center;
+}
 
 #navbar-brand img {
     margin-top: 12px;
@@ -126,7 +138,7 @@ hr {
 }
 
 .nav-item {
-    margin-right: 0.5rem;
+    margin-left: 1rem;
 }
 
 .nav-social-buttons {
@@ -191,7 +203,7 @@ code {
 .headshot {
     width: 60%;
     height: auto;
-    padding-top: 30px;
+    padding-top: 50px;
     vertical-align: center;
 }
 
@@ -249,7 +261,7 @@ code {
 
 @media(min-width: 768px) {
     .code-container {
-        padding: 100px;
+        padding: 200px;
     }
 
     .stats-row {
@@ -261,7 +273,7 @@ code {
 }
 
 .code-container {
-    padding-top: 100px;
+    margin-top: 75px;
 }
 
 .code-btn {
@@ -366,8 +378,7 @@ code {
  */
 
 #logo {
-    height: 2.5rem;
-    margin-left: 7%;
+    height: 3.5rem;
     width: auto;
 }
 
