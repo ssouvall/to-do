@@ -73,37 +73,24 @@
         <div class="card-header" id="headingOne">
           <h2 class="mb-0">
             <button class="btn btn-link code-btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Save User Entry as a new Event
+              Prepare Local Storage and Set Empty Array
             </button>
           </h2>
         </div>
       <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
         <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function saveEvent() {
-    //get the events out of local storage and parse them
-    let eventDetails = JSON.parse(sessionStorage.getItem("superDogArray")) || superDogArray;
+  <code class="line-numbers">let taskArray = [];
 
-    //create a new object with the new data entered by the user
-    let obj = {};
-    obj["event"] = document.getElementById("newName").value;
-    obj["city"] = document.getElementById("newCity").value;
-    obj["state"] = document.getElementById("newState").value;
-    obj["attendance"] = parseInt(document.getElementById("newAttendance").value);
-
-    let eventDate = document.getElementById("newDate").value;
-    let eventDate2 = `${eventDate} 00:00`
-
-    obj["date"] = new Date(eventDate2).toLocaleDateString();
-
-    //push the new object into the eventDetails array
-    eventDetails.push(obj);
-
-    //load the changes into the sessionStorage
-    sessionStorage.setItem("superDogArray", JSON.stringify(eventDetails));
-
-    buildDropDown();
-    displayData(eventDetails);
+  function prepareLocalStorage() {
+      if (getLocalStorage() == null) {
+          let defObj = {
+              list: new Array(),
+              filterName: "all"
+          }
+          setLocalStorage(defObj)
+      };
+      listTasks()
   };</code>
 </pre>
         </div>
@@ -113,24 +100,25 @@
       <div class="card-header" id="headingTwo">
         <h2 class="mb-0">
           <button class="btn btn-link collapsed code-btn" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          Get the Event Data from the Event Array
+          Create a New Task
         </button>
       </h2>
     </div>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function getData() {
-    //get the events array from sessionStorage and parse it
-    let eventDetails = JSON.parse(sessionStorage.getItem("superDogArray")) || [];
-
-    //if the array is empty, populate with hardcoded event details
-    if (eventDetails.length === 0) {
-        eventDetails = superDogArray;
-        sessionStorage.setItem("superDogArray", JSON.stringify(eventDetails));
+  <code class="line-numbers">function createTask(formData) {
+    let tasks = getLocalStorage();
+    let task = {
+        id: generateID(),
+        created: new Date().toLocaleDateString(),
+        completed: false,
+        title: formData[0].value,
+        dueDate: new Date(`${formData[1].value} 00:00`).toLocaleDateString()
     };
-
-    return eventDetails;
+    tasks.push(task)
+    setLocalStorage(tasks);
+    listTasks();
   };</code>
 </pre>
       </div>
@@ -140,45 +128,28 @@
     <div class="card-header" id="headingThree">
       <h2 class="mb-0">
         <button class="btn btn-link collapsed code-btn" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-          Display the Data
+          Edit a Task
         </button>
       </h2>
     </div>
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function displayData(eventDetails) {
-    //get HTML template
-    const template = document.getElementById("data-template");
-    //get body of results table
-    const resultsBody = document.getElementById("resultsBody");
-    //clear the table
-    resultsBody.innerHTML = "";
-    //loop through the events array
-    //grab the events from local storage
-    let curEvents = JSON.parse(sessionStorage.getItem("superDogArray")) || [];
-
-    if (curEvents.length == 0) {
-        curEvents = superDogArray;
-        sessionStorage.setItem("superDogArray", JSON.stringify(curEvents));
+  <code class="line-numbers">function editTask(node) {
+    let id = node.parentNode.parentNode.children[1].innerText;
+    let tasks = getLocalStorage();
+    let ids = tasks.map(t => t.id)
+    let matchId = "";
+    for (let i = 0; i < ids.length; i++) {
+        if (ids[i] == id) {
+            matchId = ids[i];
+        }
     };
+    let editedTask = tasks.find(t => t.id == matchId)
 
-
-    for (let i = 0; i < eventDetails.length; i++) {
-        //get data row of the table
-        const dataRow = document.importNode(template.content, true);
-
-        //assign object data to each line of the template
-        dataRow.getElementById("name").textContent = eventDetails[i].event;
-        dataRow.getElementById("city").textContent = eventDetails[i].city;
-        dataRow.getElementById("state").textContent = eventDetails[i].state;
-        dataRow.getElementById("attendance").textContent = formatNumber(eventDetails[i].attendance);
-        dataRow.getElementById("date").textContent = eventDetails[i].date;
-
-        //write the data to resultsBody
-        resultsBody.appendChild(dataRow);
-
-    };
+    document.getElementById("editID").value = editedTask.id;
+    document.getElementById("editTitle").value = editedTask.title;
+    document.getElementById("editDueDate").value = editedTask.dueDate;
   };</code>
 </pre>
       </div>
@@ -208,6 +179,27 @@
         });
     };
     displayStats();
+  };
+
+  function editSave() {
+      id = document.getElementById("editID").value;
+      let tasks = getLocalStorage();
+      let ids = tasks.map(t => t.id);
+      let matchId = "";
+      for (let i = 0; i < ids.length; i++) {
+          if (ids[i] == id) {
+              matchId = ids[i];
+          }
+      };
+      let editedTask = tasks.find(t => t.id == matchId);
+
+      editedTask.title = document.getElementById("editTitle").value;
+      editedTask.dueDate = document.getElementById("editDueDate").value
+
+      console.log(editedTask.dueDate)
+
+      setLocalStorage(tasks)
+      listTasks();
   };</code>
 </pre>
       </div>
@@ -217,45 +209,36 @@
       <div class="card-header" id="headingFive">
         <h2 class="mb-0">
           <button class="btn btn-link collapsed code-btn" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-            Display the Event Stats
+            Delete a Task or Clear all Tasks
           </button>
       </h2>
     </div>
     <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function displayStats() {
-    let total = 0;
-    let average = 0;
-    let most = 0;
-    let least = -1;
-    let currentAttendance = 0;
+  <code class="line-numbers">function deleteTask() {
+    let tasks = getLocalStorage();
+    let cell = this.event.path[3].rowIndex;
 
-    for (let i = 0; i < filteredEvents.length; i++) {
-        currentAttendance = filteredEvents[i].attendance;
-        total += currentAttendance;
-
-        if (most < currentAttendance) {
-            most = currentAttendance;
-        };
-
-        if (least > currentAttendance || least < 0) {
-            least = currentAttendance;
+    for (let i = 0; i < tasks.length; i++) {
+        if (i === cell - 1) {
+            tasks.splice(i, 1);
         };
     };
 
-    average = total / filteredEvents.length;
+    setLocalStorage(tasks)
+    listTasks();
+  };
 
-    document.getElementById("total").innerHTML = total.toLocaleString();
-    document.getElementById("most").innerHTML = most.toLocaleString();
-    document.getElementById("least").innerHTML = least.toLocaleString();
-    document.getElementById("average").innerHTML = average.toLocaleString(
-        undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }
-    );
+  function clearTasks() {
+      let tasks = getLocalStorage();
 
+      for (let i = 0; i < tasks.length; i++) {
+          tasks.splice(i, tasks.length)
+      };
+
+      setLocalStorage(tasks);
+      listTasks();
   };</code>
 </pre>
       </div>
@@ -265,30 +248,41 @@
       <div class="card-header" id="headingSix">
         <h2 class="mb-0">
           <button class="btn btn-link collapsed code-btn" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
-          Build the Cities Dropdown
+          Mark a Task as Complete
         </button>
       </h2>
     </div>
     <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function buildDropDown() {
-    let eventDropDown = document.getElementById("eventDropDown");
-    let curEvents = JSON.parse(sessionStorage.getItem("superDogArray")) || superDogArray;
-    //...new Set() is a built-in JS syntax
-    let distinctEvents = [...new Set(curEvents.map((event) => event.city))];
+  <code class="line-numbers">function completeTask(btn) {
+    let tasks = getLocalStorage();
+    let checked = isChecked();
 
-    let linkedHTMLEnd = '<div class="dropdown-divider"></div><a class="dropdown-item" onclick="getEvents(this)" data-string="All" >All</a>';
-    let resultsHTML = "";
+    let getID = btn.closest("tr").querySelector("#taskID").innerHTML;
+    let thisRow = btn.closest("tr");
+    let status = tasks.find(t => t.id == getID);
 
-    for (let i = 0; i < distinctEvents.length; i++) {
+    if (checked === true) {
+        thisRow.classList.add("strikeThrough");
+        status.completed = true;
 
-        resultsHTML += `<a class="dropdown-item" onclick="getEvents(this)" data-string="${distinctEvents[i]}">${distinctEvents[i]}</a>`;
+    } else {
+        thisRow.classList.remove("strikeThrough");
+        status.completed = false;
     };
 
-    resultsHTML += linkedHTMLEnd;
-    eventDropDown.innerHTML = resultsHTML;
-    displayStats();
+    setLocalStorage(tasks)
+
+  };
+
+  function isChecked() {
+      let checkBox = document.getElementsByClassName("taskCheck");
+      for (let i = 0; i < checkBox.length; i++) {
+          if (checkBox[i].checked) {
+              return true;
+          }
+      };
   };</code>
 </pre>
       </div>
@@ -298,32 +292,85 @@
       <div class="card-header" id="headingSeven">
         <h2 class="mb-0">
           <button class="btn btn-link collapsed code-btn" type="button" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
-            Allow Entry to be Deleted
+            Display Data
           </button>
       </h2>
     </div>
     <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function deleteEntry() {
-    let eventDetails = JSON.parse(sessionStorage.getItem("superDogArray")) || superDogArray;
+  <code class="line-numbers">function listTasks() {
+    let tasks = getLocalStorage();
+    let template = document.getElementById("data-template");
+    let resultsBody = document.getElementById("resultsBody");
 
-    //access the rowIndex of the line that the delete button clicked is on
-    let cell = this.event.path[2].rowIndex;
+    resultsBody.innerHTML = "";
 
-    //loop through the events array and find an event with index that matches rowIndex-1
-    for (let i = 0; i < eventDetails.length; i++) {
-        if (i == cell - 1) {
-            eventDetails.splice(i, 1);
-        };
+    for (let i = 0; i < tasks.length; i++) {
+        const taskRow = document.importNode(template.content, true)
+
+        taskRow.getElementById("taskID").textContent = tasks[i].id;
+        taskRow.getElementById("complete").textContent = tasks[i].completed;
+        taskRow.getElementById("task").textContent = tasks[i].title;
+        taskRow.getElementById("createdDate").textContent = tasks[i].created;
+        taskRow.getElementById("dueDate").textContent = displayDate(tasks[i].dueDate);
+
+        resultsBody.appendChild(taskRow);
     };
 
-    //update the superDogArray in sessionStorage
-    sessionStorage.setItem("superDogArray", JSON.stringify(eventDetails));
+    countTasks();
+  };
 
-    //display the updated event data
-    buildDropDown()
-    displayData(eventDetails);
+  function displayDate(dateString) {
+      let mydate = new Date(dateString)
+      let res = ""
+      res += mydate.getMonth() + 1
+      res += "/"
+      res += mydate.getDate()
+      res += "/"
+      res += mydate.getFullYear()
+      return res
+  };
+
+  function countTasks() {
+      let tasks = getLocalStorage()
+      document.getElementById("numTasks").innerHTML = tasks.length;
+  };</code>
+</pre>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+      <div class="card-header" id="headingSeven">
+        <h2 class="mb-0">
+          <button class="btn btn-link collapsed code-btn" type="button" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseSeven">
+            Utility Functions
+          </button>
+      </h2>
+    </div>
+    <div id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordionExample">
+      <div class="card-body">
+<pre class="language-javascript">
+  <code class="line-numbers">function generateID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+  };
+
+  function getIdFromParentOfNode(node) {
+      // id is 2 parents above node
+      let id = node.parentNode.parentNode.getAttribute("data-id")
+      return id
+  };
+
+  function getLocalStorage() {
+      return JSON.parse(localStorage.getItem("taskArray")) || [];
+  };
+
+  function setLocalStorage(arr) {
+      localStorage.setItem("taskArray", JSON.stringify(arr))
   };</code>
 </pre>
       </div>
@@ -358,6 +405,6 @@
     <!-- PrismJS -->
     <script src="/js/prism.js"></script>
     <!-- Custom Scripts -->
-    <script src="/js/superDog.js"></script>
+    <script src="/js/site.js"></script>
   </body>
 </html>
