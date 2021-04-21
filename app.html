@@ -1,0 +1,201 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>Dashboard Template · Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/dashboard/">
+
+    <!-- Bootstrap core CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <!-- Custom  Styles-->
+    <link rel="stylesheet" href="/css/site.css">
+    <!-- Font-Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+  </head>
+  <body onload="prepareLocalStorage()">
+    <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"><span><img id="logo" src="/img/task-master.png" alt="task-master"></span></a>
+      <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item  nav-animate">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item nav-animate active">
+              <a class="nav-link" href="app.html">The App <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item nav-animate">
+                <a class="nav-link" href="code.html">See The Code</a>
+            </li>
+            <li class="nav-item nav-animate">
+                <a class="nav-link" href="//github.com/ssouvall/superDog.git">Get The Code</a>
+            </li>
+            <li class="nav-item nav-animate">
+                <a class="nav-link" href="about.html">About The Developer</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ml-auto">
+            <li>
+                <div class="nav-link nav-social-buttons">
+                    <a href="https://github.com/ssouvall"><i class="fab fa-github fa-lg nav-icons"></i></a>
+                    <a href="https://twitter.com/SouvallStephen"><i class="fab fa-twitter fa-lg nav-icons"></i></a>
+                    <a href="https://www.linkedin.com/in/stephen-souvall-bbb77116/"><i class="fab fa-linkedin-in fa-lg nav-icons"></i></a>
+                </div>
+            </li>
+          </ul>
+        </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-2 d-none d-md-block bg-dark sidebar">
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-tasks"></i> CREATE TASK
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-tasks"></i> DROPDOWN LINKS
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <a class="dropdown-item" href="#">Incomplete</a>
+              <a class="dropdown-item" href="#">Overdue</a>
+              <a class="dropdown-item" href="#">Complete</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+      <div class="title-div d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1>CURRENT TASKS (<span id="numTasks"></span>)</h1>
+      </div>
+
+      <div class="container">
+          <button id="taskBtn" class="btn btn-info" data-toggle="modal" data-target="#addTask">
+              New Task
+          </button>
+          <button id="clearBtn" class="btn btn-secondary" onclick="clearTasks()">
+              Clear Tasks
+          </button>
+        <div class="table-responsive">
+            <table class="table table-striped" id="eventData">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            <i class="fas fa-check-circle"></i>
+                        </th>
+                        <th>
+                            Title
+                        </th>
+                        <th>
+                            Created
+                        </th>
+                        <th>
+                            Due Date
+                        </th>
+                        <th>
+                            
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- Data Goes Here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    </main>
+  </div>
+</div>
+<div class="modal" id="addTask">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Add New Task</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="newTaskForm">
+            <div class="form-group">
+              <label for="newTask">Title</label>
+              <input type="text" id="newTask" autocomplete="off" class="form-control" placeholder="New Task">
+            </div>
+            <div class="form-group">
+              <label for="newDueDate">Due Date</label>
+              <input type="date" id="newDueDate" autocomplete="off" class="form-control" placeholder="Due Date">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" value="Submit" class="btn btn-primary" id="submitBtn" data-dismiss="modal" onclick="createTask(this.form)">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="editTask">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Edit Task</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="EditTaskForm">
+            <input type="hidden" id="editID" name="editID">
+            <div class="form-group">
+              <label for="editTitle">Title</label>
+              <input type="text" id="editTitle" autocomplete="off" class="form-control" placeholder="New Task">
+            </div>
+            <div class="form-group">
+              <label for="editDueDate">Due Date</label>
+              <input type="date" id="editDueDate" autocomplete="off" class="form-control" placeholder="Due Date">
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" value="Submit" class="btn btn-primary" id="editBtn" data-dismiss="modal" onclick="editSave()">Save Changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+<template id="data-template">
+  <tr>
+    <td id="check"><input class="taskCheck" type="checkbox" onclick="completeTask(this)"></td>
+    <td id="taskID" class="d-none"></td>
+    <td id="complete" class="complete d-none" class="d-none"></td>
+    <td id="task"></td>
+    <td id="createdDate"></td>
+    <td id="dueDate"></td>
+    <td id="crudBtns">
+      <button type="button" class="btn btn-outline-primary" id="updateBtn" data-toggle="modal" data-target="#editTask" onclick="editTask(this)"><i class="fas fa-pencil-alt"></i></button>
+      <button type="button" class="btn btn-outline-primary" id="deleteBtn" onclick="deleteTask()"><i class="fas fa-trash-alt"></i></button>
+    </td>
+  </tr>
+</template>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script>window.jQuery || document.write('<script src="/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/site.js"></script>
+
+</body>
+</html>
