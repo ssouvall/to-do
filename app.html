@@ -5,7 +5,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Jekyll v3.8.5">
-    <title>Dashboard Template · Bootstrap</title>
+    <title>Task Master - Stephen Souvall</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/dashboard/">
 
@@ -35,7 +35,7 @@
                 <a class="nav-link" href="code.html">See The Code</a>
             </li>
             <li class="nav-item nav-animate">
-                <a class="nav-link" href="//github.com/ssouvall/superDog.git">Get The Code</a>
+                <a class="nav-link" href="//github.com/ssouvall/to-do-list.git">Get The Code</a>
             </li>
             <li class="nav-item nav-animate">
                 <a class="nav-link" href="about.html">About The Developer</a>
@@ -59,7 +59,7 @@
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="#" data-toggle="modal" data-target="#addTask">
               <i class="fas fa-tasks"></i> CREATE TASK
             </a>
           </li>
@@ -68,9 +68,9 @@
               <i class="fas fa-tasks"></i> DROPDOWN LINKS
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href="#">Incomplete</a>
-              <a class="dropdown-item" href="#">Overdue</a>
-              <a class="dropdown-item" href="#">Complete</a>
+              <a class="dropdown-item" id="incomplete">Incomplete</a>
+              <a class="dropdown-item" id="overdue">Overdue</a>
+              <a class="dropdown-item" id="complete">Complete</a>
             </div>
           </li>
         </ul>
@@ -78,7 +78,7 @@
     </nav>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
       <div class="title-div d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1>CURRENT TASKS (<span id="numTasks"></span>)</h1>
+        <h1 id="currentTasks">CURRENT TASKS (<span id="numTasks"></span>)</h1>
       </div>
 
       <div class="container">

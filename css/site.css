@@ -1,14 +1,29 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
 body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
     font-size: .875rem;
 }
 
-.feather {
-    width: 16px;
-    height: 16px;
-    vertical-align: text-bottom;
+html,
+body {
+    background: #f8f9fa;
 }
 
-h1 {
+h1,
+h3,
+h4,
+h5 {
+    text-align: center;
+}
+
+#currentTasks {
     margin: 3% 30%;
     width: 40%;
 }
@@ -16,6 +31,255 @@ h1 {
 .btn {
     background-color: #F28E13;
     border: none;
+}
+
+hr {
+    border: 3px solid #F28E13;
+    border-radius: 2px;
+    margin: 5% 0;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+#navbar-brand img {
+    margin-top: 12px;
+    height: 4rem;
+    width: 12rem;
+}
+
+.hero-div {
+    text-align: left;
+}
+
+.hero {
+    width: 75%;
+    height: auto;
+    padding-top: 70px;
+}
+
+#superdog-text {
+    height: auto;
+    width: 100%;
+}
+
+#deleteButton {
+    background-color: #6c757d;
+}
+
+#delete {
+    text-align: right;
+}
+
+.btn:hover {
+    background-color: #333;
+}
+
+@media(max-width: 768px) {
+    .hero-div {
+        text-align: center;
+    }
+}
+
+@media(min-width: 768px) {
+    #app-row {
+        margin-right: 25%;
+        margin-left: 25%;
+        width: 70%;
+    }
+}
+
+#app-form {
+    display: block;
+}
+
+.app-container {
+    padding-top: 100px;
+}
+
+.result {
+    display: none;
+    opacity: 0;
+}
+
+
+#app-hero {
+    height: 15%;
+    width: auto;
+}
+
+.intro {
+    padding-top: 70px;
+    text-align: center;
+}
+
+.page-break {
+    width: 100%;
+    text-align: center;
+}
+
+/* Header */
+
+.navbar {
+    background-color: #333;
+}
+
+.nav-item {
+    margin-right: 0.5rem;
+}
+
+.nav-social-buttons {
+    width: 10rem;
+}
+
+nav li {
+    position: relative;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    line-height: 30px;
+    background-color: #333;
+    text-align: center;
+}
+
+.footer p {
+    color: #fff;
+    font-size: 14px;
+    margin: 0;
+}
+
+.footer-social-buttons {
+    width: 50rem;
+}
+
+#footer-link {
+    color: #F28E13;
+}
+
+.nav-social-buttons a {
+    margin-right: 1rem;
+}
+
+.nav-icons {
+    color: white;
+}
+
+/* End Header */
+
+body>.container {
+    padding: 60px 15px 0;
+}
+
+.footer>.container {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+code {
+    font-size: 80%;
+}
+
+.headshot-div {
+    text-align: center;
+}
+
+.headshot {
+    width: 60%;
+    height: auto;
+    padding-top: 30px;
+    vertical-align: center;
+}
+
+.app-main {
+    padding-top: 200px !important;
+}
+
+.app-main h3 {
+    text-align: left;
+}
+
+.app-main li {
+    font-size: 1.2rem;
+    line-height: 2rem;
+}
+
+.app-data {
+    margin-top: 3%;
+}
+
+.app-card {
+    margin: 1%;
+    padding: 1%;
+}
+
+@media(min-width: 800px) {
+    #form-div {
+        width: 50%;
+    }
+}
+
+.again-btn {
+    margin-left: 35%;
+    margin-right: 35%;
+    width: 30%;
+}
+
+.app input {
+    margin-bottom: 15px;
+}
+
+
+
+.btn-col {
+    text-align: center;
+}
+
+.stats {
+    text-align: right;
+}
+
+.app-card a {
+    color: #F28E13;
+}
+
+@media(min-width: 768px) {
+    .code-container {
+        padding: 100px;
+    }
+
+    .stats-row {
+        width: 80%;
+        margin-left: 10%;
+        margin-right: 10%;
+        text-align: left;
+    }
+}
+
+.code-container {
+    padding-top: 100px;
+}
+
+.code-btn {
+    color: white;
+}
+
+.accordion {
+    text-align: center;
+}
+
+.accordion .btn {
+    width: 80%;
+}
+
+.feather {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
 }
 
 /*
@@ -105,48 +369,6 @@ h1 {
     height: 2.5rem;
     margin-left: 7%;
     width: auto;
-}
-
-.navbar-brand {
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-    font-size: 1rem;
-    background-color: #212529;
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-}
-
-.navbar .form-control {
-    padding: .75rem 1rem;
-    border-width: 0;
-    border-radius: 0;
-}
-
-.navbar {
-    background-color: #333;
-}
-
-.nav-item {
-    margin-left: 2.5rem;
-}
-
-.nav-link {
-    letter-spacing: 0.5px;
-}
-
-.nav-link i {
-    color: white;
-}
-
-.nav-social-buttons {
-    width: 10rem;
-}
-
-.nav-social-buttons a {
-    margin-right: 1rem;
-}
-
-nav li {
-    position: relative;
 }
 
 

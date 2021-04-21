@@ -1,19 +1,4 @@
-// function pageLoad() {
-//     prepareLocalStorage();
-//     listTasks();
-
-//     // //Trigger tooltips on hover
-//     // $('[data-toggle="tooltip"]').tooltip({
-//     //     trigger: 'hover'
-//     // })
-
-//     //set task count
-//     $("#taskCount").text('CURRENT TASKS (${GetTaskCount()})');
-// }
-
 let taskArray = [];
-let editArray = [];
-let editItem = null;
 
 function prepareLocalStorage() {
     if (getLocalStorage() == null) {
@@ -56,12 +41,23 @@ function listTasks() {
         taskRow.getElementById("complete").textContent = tasks[i].completed;
         taskRow.getElementById("task").textContent = tasks[i].title;
         taskRow.getElementById("createdDate").textContent = tasks[i].created;
-        taskRow.getElementById("dueDate").textContent = tasks[i].dueDate;
+        taskRow.getElementById("dueDate").textContent = displayDate(tasks[i].dueDate);
 
         resultsBody.appendChild(taskRow);
     }
 
     countTasks();
+}
+
+function displayDate(dateString) {
+    let mydate = new Date(dateString)
+    let res = ""
+    res += mydate.getMonth() + 1
+    res += "/"
+    res += mydate.getDate()
+    res += "/"
+    res += mydate.getFullYear()
+    return res
 }
 
 function editTask(node) {
@@ -95,6 +91,8 @@ function editSave() {
 
     editedTask.title = document.getElementById("editTitle").value;
     editedTask.dueDate = document.getElementById("editDueDate").value
+
+    console.log(editedTask.dueDate)
 
     setLocalStorage(tasks)
     listTasks();
@@ -157,17 +155,14 @@ function isChecked() {
     }
 };
 
-// function checkIfCompleted() {
-//     let tasks = getLocalStorage();
-//     let thisRow = btn.closest("tr")
-//     let isDone = tasks.filter(task => task.completed = true);
-//     isDone.forEach(task => {
-//         thisRow.classList.add("strikeThrough")
-//     })
-// };
-
-
-
+function checkIfCompleted() {
+    let tasks = getLocalStorage();
+    let thisRow = btn.closest("tr")
+    let isDone = tasks.filter(task => task.completed = true);
+    isDone.forEach(task => {
+        thisRow.classList.add("strikeThrough")
+    })
+};
 
 
 function countTasks() {
