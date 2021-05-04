@@ -88,6 +88,14 @@
           <button id="clearBtn" class="btn btn-secondary" onclick="clearTasks()">
               Clear Tasks
           </button>
+          <button class="dropdown btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filter By:
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#" onclick="filterAll()">All Tasks</a>
+            <a class="dropdown-item" href="#" onclick="filterIncomplete()">Incomplete</a>
+            <a class="dropdown-item" href="#" onclick="filterCompleted()">Completed</a>
+          </div>
         <div class="table-responsive">
             <table class="table table-striped" id="eventData">
                 <thead class="thead-dark">
@@ -178,7 +186,6 @@
   </div>
 <template id="data-template">
   <tr id="data-row">
-    <!-- <td id="check"><input id="taskCheck" class="taskCheck" type="checkbox" onclick="completeTask(this)"></td> -->
     <td id="taskID" class="d-none"></td>
     <td id="complete" class="complete d-none" class="d-none"></td>
     <td id="task"></td>

@@ -421,3 +421,8 @@ code {
 tr.complete > td:nth-child(-n+4) {
     text-decoration: line-through;
 } 
+
+tr > td,
+tr > th {
+    text-align: center;
+}
