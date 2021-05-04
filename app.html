@@ -92,9 +92,7 @@
             <table class="table table-striped" id="eventData">
                 <thead class="thead-dark">
                     <tr>
-                        <th>
-                            <i class="fas fa-check-circle"></i>
-                        </th>
+                        
                         <th>
                             Title
                         </th>
@@ -105,8 +103,10 @@
                             Due Date
                         </th>
                         <th>
-                            
-                        </th>
+                          <i class="fas fa-check-circle"></i>
+                          <i class="fas fa-pencil-alt"></i>
+                          <i class="fas fa-trash"></i>
+                      </th>
                     </tr>
                 </thead>
                 <tbody id="resultsBody">
@@ -185,9 +185,9 @@
     <td id="createdDate"></td>
     <td id="dueDate"></td>
     <td id="crudBtns">
+      <button type="button" class="btn btn-outline-primary" id="completeBtn" onclick="completeTask(this)"><i class="fas fa-check"></i></button>
       <button type="button" class="btn btn-outline-primary" id="updateBtn" data-toggle="modal" data-target="#editTask" onclick="editTask(this)"><i class="fas fa-pencil-alt"></i></button>
       <button type="button" class="btn btn-outline-primary" id="deleteBtn" onclick="deleteTask()"><i class="fas fa-trash-alt"></i></button>
-      <button type="button" class="btn btn-outline-primary" id="completeBtn" onclick="completeTask(this)"><i class="fas fa-check"></i></button>
 
     </td>
   </tr>
