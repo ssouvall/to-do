@@ -1,16 +1,29 @@
-let taskArray = [];
+$(function(){          
+    PrepareLocalStorage();  
+
+    let allTasks = GetLocalStorage();
+    //Set task count
+    SetTaskCountLabel(`ALL TASKS (${allTasks.length})`);
+
+    //This is my first change where I am trying to pass the entire array into ListTasks...
+    //Not even sure if it works yet...However if it does I am in business!
+    ListTasks(allTasks);
+
+    //Trigger tooltips on hover
+    $('[data-toggle="tooltip"]').tooltip({ trigger : 'hover' })  
+    
+    $("#btnSearch").on("click", function(){
+       let searchString = $("#txtSearch").val();
+       SearchTasks(searchString);
+    })
+});
 
 function prepareLocalStorage() {
-    if (getLocalStorage() == null) {
-        // setLocalStorage(taskArray);
-        let defObj = {
-            list: new Array(),
-            filterName: "all"
-        }
-        setLocalStorage(defObj)
-    };
-    listTasks()
-    // checkIfCompleted()
+    if (getLocalStorage() == null) 
+        
+        setLocalStorage(new Array());
+    
+    listTasks(getLocalStorage())
 }
 
 function createTask(formData) {
@@ -24,36 +37,32 @@ function createTask(formData) {
     }
     tasks.push(task)
     setLocalStorage(tasks);
-    listTasks();
+    listTasks(tasks);
 }
 
-function listTasks() {
-    let tasks = getLocalStorage();
+function listTasks(tasks) {
     let template = document.getElementById("data-template");
     let resultsBody = document.getElementById("resultsBody");
 
     resultsBody.innerHTML = "";
+    
 
     for (let i = 0; i < tasks.length; i++) {
         const taskRow = document.importNode(template.content, true)
-
+        
+        if(tasks[i].completed)
+            taskRow.getElementById("data-row").setAttribute("class", "complete");
+        
         taskRow.getElementById("taskID").textContent = tasks[i].id;
-        taskRow.getElementById("complete").textContent = tasks[i].completed;
+        // taskRow.getElementById("complete").textContent = tasks[i].completed;
         taskRow.getElementById("task").textContent = tasks[i].title;
         taskRow.getElementById("createdDate").textContent = tasks[i].created;
         taskRow.getElementById("dueDate").textContent = displayDate(tasks[i].dueDate);
+        taskRow.getElementById("crudBtns").setAttribute("data-id", tasks[i].id)
 
         resultsBody.appendChild(taskRow);
     }
 
-    //Display tasks that have been completed with strikethrough and checkbox checked
-    tasks.forEach(task => {
-        console.log(tasks)
-        if (task.completed == true) {
-            document.getElementById("data-row").classList.add("strikeThrough");
-            document.getElementById("taskCheck").checked = true;
-        }
-    });
 
     countTasks();
 }
@@ -104,7 +113,7 @@ function editSave() {
     console.log(editedTask.dueDate)
 
     setLocalStorage(tasks)
-    listTasks();
+    listTasks(tasks);
 }
 
 //delete an entry
@@ -119,7 +128,7 @@ function deleteTask() {
     };
 
     setLocalStorage(tasks)
-    listTasks();
+    listTasks(tasks);
 };
 
 function clearTasks() {
@@ -130,40 +139,22 @@ function clearTasks() {
     };
 
     setLocalStorage(tasks);
-    listTasks();
+    listTasks(tasks);
 };
 
 
-function completeTask(btn) {
-    let tasks = getLocalStorage();
-    let checked = isChecked();
+function completeTask(element) {
 
-    let getID = btn.closest("tr").querySelector("#taskID").innerHTML;
-    let thisRow = btn.closest("tr");
-    let status = tasks.find(t => t.id == getID);
+    let taskId = getTaskId(element);
+    let tasks = getLocalStorage();  
+    let task = tasks.find(t => t.id == taskId);
+    task.completed = true;
 
-    if (checked === true) {
-        thisRow.classList.add("strikeThrough");
-        status.completed = true;
+    setLocalStorage(tasks);
+    listTasks(getLocalStorage());
 
-    } else {
-        thisRow.classList.remove("strikeThrough");
-        status.completed = false;
-    }
-
-    setLocalStorage(tasks)
 
 };
-
-function isChecked() {
-    let checkBox = document.getElementsByClassName("taskCheck");
-    for (let i = 0; i < checkBox.length; i++) {
-        if (checkBox[i].checked) {
-            return true;
-        }
-    }
-};
-
 
 function countTasks() {
     let tasks = getLocalStorage()
@@ -190,6 +181,12 @@ function filterIncomplete() {
         }
     }
     displayFiltered(notDone)
+}
+
+
+function filterAll() {
+    let tasks = getLocalStorage();
+    listTasks(tasks);
 }
 
 function displayFiltered(arr) {
@@ -236,4 +233,9 @@ function getLocalStorage() {
 
 function setLocalStorage(arr) {
     localStorage.setItem("taskArray", JSON.stringify(arr))
+}
+
+function getTaskId(element){
+    let taskId = $(element).parent().attr("data-id");
+    return taskId;
 }

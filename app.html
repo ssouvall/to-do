@@ -65,10 +65,10 @@
           </li>
           <li class="nav-item">
             <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-tasks"></i> DROPDOWN LINKS
+              <i class="fas fa-tasks"></i> FILTER TASKS
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" id="overdue" onclick="listTasks()">All</a>
+              <a class="dropdown-item" id="overdue" onclick="filterAll()">All</a>
               <a class="dropdown-item" id="incomplete" onclick="filterIncomplete()">Incomplete</a>
               <a class="dropdown-item" id="complete" onclick="filterCompleted()">Complete</a>
             </div>
@@ -178,7 +178,7 @@
   </div>
 <template id="data-template">
   <tr id="data-row">
-    <td id="check"><input id="taskCheck" class="taskCheck" type="checkbox" onclick="completeTask(this)"></td>
+    <!-- <td id="check"><input id="taskCheck" class="taskCheck" type="checkbox" onclick="completeTask(this)"></td> -->
     <td id="taskID" class="d-none"></td>
     <td id="complete" class="complete d-none" class="d-none"></td>
     <td id="task"></td>
@@ -187,6 +187,8 @@
     <td id="crudBtns">
       <button type="button" class="btn btn-outline-primary" id="updateBtn" data-toggle="modal" data-target="#editTask" onclick="editTask(this)"><i class="fas fa-pencil-alt"></i></button>
       <button type="button" class="btn btn-outline-primary" id="deleteBtn" onclick="deleteTask()"><i class="fas fa-trash-alt"></i></button>
+      <button type="button" class="btn btn-outline-primary" id="completeBtn" onclick="completeTask(this)"><i class="fas fa-check"></i></button>
+
     </td>
   </tr>
 </template>

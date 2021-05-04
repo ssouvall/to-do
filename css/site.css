@@ -417,10 +417,7 @@ code {
     margin: 2% auto;
 }
 
-.strikeThrough>:nth-child(-n+6) {
+/* Represents the first four elements. [=-0+4, -1+4, -2+4, -3+4] */
+tr.complete > td:nth-child(-n+4) {
     text-decoration: line-through;
-}
-
-.notStrikeThrough>:nth-child(-n+6) {
-    text-decoration: none;
-}
+} 
