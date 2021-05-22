@@ -69,7 +69,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
               <a class="dropdown-item" id="all" onclick="filterAll()">All</a>
-              <a class="dropdown-item" id="overdue" onclick="filterOverdue()">Overdue</a>
+              <a class="dropdown-item" id="overdue" onclick="filterOverDue()">Overdue</a>
               <a class="dropdown-item" id="incomplete" onclick="filterIncomplete()">Incomplete</a>
               <a class="dropdown-item" id="complete" onclick="filterCompleted()">Complete</a>
             </div>
@@ -79,7 +79,7 @@
     </nav>
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
       <div class="title-div d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 id="currentTasks">CURRENT TASKS (<span id="taskCount"></span>)</h1>
+        <h1 id="currentTasks"><span id="taskCount"></span></h1>
       </div>
 
       <div class="container">
@@ -97,7 +97,7 @@
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <a class="dropdown-item" href="#" onclick="filterAll()">All Tasks</a>
-              <a class="dropdown-item" href="#" onclick="filterOverdue()">Overdue</a>
+              <a class="dropdown-item" href="#" onclick="filterOverDue()">Overdue</a>
               <a class="dropdown-item" href="#" onclick="filterIncomplete()">Incomplete</a>
               <a class="dropdown-item" href="#" onclick="filterCompleted()">Completed</a>
             </div>

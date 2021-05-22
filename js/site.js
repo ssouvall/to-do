@@ -38,7 +38,7 @@ function filterOverDue(){
     listTasks(completedTasks)
 }
 
-function filterInComplete(){
+function filterIncomplete(){
     let tasks = getLocalStorage();
     let incompleteTasks = tasks.filter(t => t.completed == false);
     setTaskCountLabel(`INCOMPLETE TASKS (${incompleteTasks.length})`)
@@ -232,8 +232,6 @@ function popEditModal(element){
     $("#NewDueDate").val(modalDueDate);
     $("#editTaskItem").modal("show");
     
-    alert("Let's see");
-
 }
 
 function clearTasks(){

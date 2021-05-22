@@ -73,24 +73,36 @@
         <div class="card-header" id="headingOne">
           <h2 class="mb-0">
             <button class="btn btn-link code-btn" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Prepare Local Storage and Set Empty Array
+              Prepare Local Storage and Initiate the Application
             </button>
           </h2>
         </div>
       <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
         <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">let taskArray = [];
+  <code class="line-numbers">$(function(){          
+      prepareLocalStorage();  
+  
+      let allTasks = getLocalStorage();
+      //Set task count
+      setTaskCountLabel(`ALL TASKS (${allTasks.length})`);
+  
+      //This is my first change where I am trying to pass the entire array into ListTasks...
+      //Not even sure if it works yet...However if it does I am in business!
+      listTasks(allTasks);
+  
+      //Trigger tooltips on hover
+      $('[data-toggle="tooltip"]').tooltip({ trigger : 'hover' })  
+      
+      $("#btnSearch").on("click", function(){
+         let searchString = $("#txtSearch").val();
+         searchTasks(searchString);
+      })
+  });
 
-  function prepareLocalStorage() {
-      if (getLocalStorage() == null) {
-          let defObj = {
-              list: new Array(),
-              filterName: "all"
-          }
-          setLocalStorage(defObj)
-      };
-      listTasks()
+  function prepareLocalStorage(){
+    if(getLocalStorage() == null) 
+        setLocalStorage(new Array());          
   };</code>
 </pre>
         </div>
@@ -107,18 +119,26 @@
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function createTask(formData) {
-    let tasks = getLocalStorage();
+  <code class="line-numbers">function createTask(formData){
+
+    let dueDate = formData[2].value == "" ? 
+        new Date() : 
+        new Date(`${formData[2].value} 00:00`);
+
     let task = {
         id: generateID(),
-        created: new Date().toLocaleDateString(),
+        created: new Date(),
         completed: false,
-        title: formData[0].value,
-        dueDate: new Date(`${formData[1].value} 00:00`).toLocaleDateString()
-    };
-    tasks.push(task)
+        title: formData[1].value,
+        dueDate: dueDate
+    }
+
+    let tasks = getLocalStorage();
+    tasks.push(task);
+
     setLocalStorage(tasks);
-    listTasks();
+    setTaskCountLabel(`ALL TASKS (${tasks.length})`);
+    listTasks(tasks);
   };</code>
 </pre>
       </div>
@@ -135,21 +155,35 @@
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function editTask(node) {
-    let id = node.parentNode.parentNode.children[1].innerText;
+  <code class="line-numbers">function popEditModal(element){
     let tasks = getLocalStorage();
-    let ids = tasks.map(t => t.id)
-    let matchId = "";
-    for (let i = 0; i < ids.length; i++) {
-        if (ids[i] == id) {
-            matchId = ids[i];
-        }
-    };
-    let editedTask = tasks.find(t => t.id == matchId)
+    let taskId = getTaskId(element);
+    let task = tasks.find(t => t.id == taskId);
 
-    document.getElementById("editID").value = editedTask.id;
-    document.getElementById("editTitle").value = editedTask.title;
-    document.getElementById("editDueDate").value = editedTask.dueDate;
+    $("#TaskId").val(task.id);
+    //document.getElementById("TaskId").value = task.id
+    
+    $("#NewTitle").val(task.title);    
+
+    //Sweet works!
+    let modalDueDate = buildModalDueDate(task.dueDate);
+    $("#NewDueDate").val(modalDueDate);
+    $("#editTaskItem").modal("show");
+    
+  };
+    
+    function editTask(formData){
+
+    let taskId = formData[1].value;
+
+    let tasks = getLocalStorage();
+    let task = tasks.find(t => t.id == taskId);           
+    task.title = formData[2].value;
+    task.dueDate = new Date(`${formData[3].value} 00:00`);
+    
+    setLocalStorage(tasks);
+    
+    listTasks();
   };</code>
 </pre>
       </div>
@@ -167,29 +201,21 @@
     <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function deleteTask() {
+  <code class="line-numbers">function deleteTask(element){   
+    clearTooltip();
+
+    let index = getIndex(element);  
     let tasks = getLocalStorage();
-    let cell = this.event.path[3].rowIndex;
+    tasks.splice(index, 1);
+    setLocalStorage(tasks);
 
-    for (let i = 0; i < tasks.length; i++) {
-        if (i === cell - 1) {
-            tasks.splice(i, 1);
-        };
-    };
-
-    setLocalStorage(tasks)
-    listTasks();
+    setTaskCountLabel(`ALL TASKS (${tasks.length})`)
+    listTasks(getLocalStorage());
   };
 
-  function clearTasks() {
-      let tasks = getLocalStorage();
-
-      for (let i = 0; i < tasks.length; i++) {
-          tasks.splice(i, tasks.length)
-      };
-
-      setLocalStorage(tasks);
-      listTasks();
+  function clearTasks(){
+    setLocalStorage(new Array());
+    listTasks();
   };</code>
 </pre>
       </div>
@@ -206,34 +232,16 @@
     <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function completeTask(btn) {
-    let tasks = getLocalStorage();
-    let checked = isChecked();
+  <code class="line-numbers">function completeTask(element){
+    clearTooltip();
 
-    let getID = btn.closest("tr").querySelector("#taskID").innerHTML;
-    let thisRow = btn.closest("tr");
-    let status = tasks.find(t => t.id == getID);
+    let taskId = getTaskId(element);
+    let tasks = getLocalStorage();  
+    let task = tasks.find(t => t.id == taskId);
+    task.completed = true;
 
-    if (checked === true) {
-        thisRow.classList.add("strikeThrough");
-        status.completed = true;
-
-    } else {
-        thisRow.classList.remove("strikeThrough");
-        status.completed = false;
-    };
-
-    setLocalStorage(tasks)
-
-  };
-
-  function isChecked() {
-      let checkBox = document.getElementsByClassName("taskCheck");
-      for (let i = 0; i < checkBox.length; i++) {
-          if (checkBox[i].checked) {
-              return true;
-          }
-      };
+    setLocalStorage(tasks);
+    listTasks(getLocalStorage());
   };</code>
 </pre>
       </div>
@@ -250,51 +258,25 @@
     <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function listTasks() {
-    let tasks = getLocalStorage();
-    let template = document.getElementById("data-template");
-    let resultsBody = document.getElementById("resultsBody");
+  <code class="line-numbers">function listTasks(tasks){
+    const template = document.getElementById("data-template");
+    const eventBody = document.getElementById("resultsBody");
+       
+    eventBody.innerHTML = ""; 
+    for (var row = 0; row < tasks.length; row++) {
+        const taskRow = document.importNode(template.content, true);      
+        
+        if(tasks[row].completed)
+            taskRow.getElementById("data-row").setAttribute("class", "complete");
 
-    resultsBody.innerHTML = "";
-
-    for (let i = 0; i < tasks.length; i++) {
-        const taskRow = document.importNode(template.content, true)
-
-        taskRow.getElementById("taskID").textContent = tasks[i].id;
-        taskRow.getElementById("complete").textContent = tasks[i].completed;
-        taskRow.getElementById("task").textContent = tasks[i].title;
-        taskRow.getElementById("createdDate").textContent = tasks[i].created;
-        taskRow.getElementById("dueDate").textContent = displayDate(tasks[i].dueDate);
-
-        resultsBody.appendChild(taskRow);
-    };
-
-    //Display tasks that have been completed with strikethrough and checkbox checked
-    tasks.forEach(task => {
-        console.log(tasks)
-        if (task.completed == true) {
-            document.getElementById("data-row").classList.add("strikeThrough");
-            document.getElementById("taskCheck").checked = true;
-        }
-    });
-
-    countTasks();
-  };
-
-  function displayDate(dateString) {
-      let mydate = new Date(dateString)
-      let res = ""
-      res += mydate.getMonth() + 1
-      res += "/"
-      res += mydate.getDate()
-      res += "/"
-      res += mydate.getFullYear()
-      return res
-  };
-
-  function countTasks() {
-      let tasks = getLocalStorage()
-      document.getElementById("numTasks").innerHTML = tasks.length;
+        taskRow.getElementById("id").textContent = tasks[row].id;            
+        taskRow.getElementById("title").textContent = tasks[row].title;
+        taskRow.getElementById("created").textContent = renderDate(tasks[row].created);
+        taskRow.getElementById("dueDate").textContent = renderDate(tasks[row].dueDate);     
+        taskRow.getElementById("tdCrud").setAttribute("data-id", tasks[row].id)
+        
+        eventBody.appendChild(taskRow);
+    }    
   };</code>
 </pre>
       </div>
@@ -311,48 +293,31 @@
     <div id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordionExample">
       <div class="card-body">
 <pre class="language-javascript">
-  <code class="line-numbers">function filterCompleted() {
+  <code class="line-numbers">function filterAll(){
       let tasks = getLocalStorage();
-      let done = [];
-      for (let i = 0; i < tasks.length; i++) {
-          if (tasks[i].completed === true) {
-              done.push(tasks[i])
-          }
-      }
-      displayFiltered(done)
+      setTaskCountLabel(`ALL TASKS (${tasks.length})`);
+      listTasks(tasks);
   };
 
-  function filterIncomplete() {
+  function filterOverDue(){
       let tasks = getLocalStorage();
-      let notDone = [];
-      for (let i = 0; i < tasks.length; i++) {
-          if (tasks[i].completed === false) {
-              notDone.push(tasks[i])
-          }
-      }
-      displayFiltered(notDone)
-  }
+      let overdueTasks = tasks.filter(t => Date.parse(t.dueDate) < new Date() );
+      setTaskCountLabel(`OVERDUE TASKS (${overdueTasks.length})`)
+      listTasks(overdueTasks);
+  };
 
-  function displayFiltered(arr) {
+  function filterCompleted(){   
       let tasks = getLocalStorage();
-      let template = document.getElementById("data-template");
-      let resultsBody = document.getElementById("resultsBody");
+      let completedTasks = tasks.filter(t => t.completed == true);
+      setTaskCountLabel(`COMPLETED TASKS (${completedTasks.length})`)
+      listTasks(completedTasks)
+  };
 
-      resultsBody.innerHTML = "";
-
-      arr.forEach(task => {
-          const taskRow = document.importNode(template.content, true)
-
-          taskRow.getElementById("taskID").textContent = task.id;
-          taskRow.getElementById("complete").textContent = task.completed;
-          taskRow.getElementById("task").textContent = task.title;
-          taskRow.getElementById("createdDate").textContent = task.created;
-          taskRow.getElementById("dueDate").textContent = displayDate(task.dueDate);
-
-          resultsBody.appendChild(taskRow);
-      });
-
-      document.getElementById("numTasks").innerHTML = arr.length;
+  function filterIncomplete(){
+      let tasks = getLocalStorage();
+      let incompleteTasks = tasks.filter(t => t.completed == false);
+      setTaskCountLabel(`INCOMPLETE TASKS (${incompleteTasks.length})`)
+      listTasks(incompleteTasks)
   };</code>
 </pre>
       </div>
@@ -377,10 +342,24 @@
     });
   };
 
-  function getIdFromParentOfNode(node) {
-      // id is 2 parents above node
-      let id = node.parentNode.parentNode.getAttribute("data-id")
-      return id
+  function getTaskCount(tasks) {    
+      return tasks.length;
+  };
+
+  function renderDate(dateString){
+      let date = new Date(dateString);
+      let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString("en-US", options)
+  };
+
+  function getTaskId(element){
+    let taskId = $(element).parent().attr("data-id");
+    return taskId;
+  };
+
+  function getTask(element){
+      let taskId = getTaskId(element);
+      return tasks.find(t => t.id == taskId);
   };
 
   function getLocalStorage() {
@@ -389,6 +368,22 @@
 
   function setLocalStorage(arr) {
       localStorage.setItem("taskArray", JSON.stringify(arr))
+  };
+
+  function clearTooltip(){
+      $("div.tooltip").hide();
+  };
+
+  function setTaskCountLabel(message){
+    $("#taskCount").text(message);
+  };
+
+  function searchTasks(searchString){
+      searchString = searchString.toLowerCase();
+      let allTasks = getLocalStorage();
+      let tasks = allTasks.filter(t => t.title.toLowerCase().includes(searchString));
+      setTaskCountLabel(`TASKS FOUND (${tasks.length})`);
+      listTasks(tasks);
   };</code>
 </pre>
       </div>
